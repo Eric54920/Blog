@@ -1,0 +1,46 @@
+{% extends 'layout/topbar.html' %}
+{% load static %}
+
+{% block title %}马国栋的博客 · 归档{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div style="min-height: 600px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">年份</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for list in archives %}
+                        <li class="list-group-item border-top"><a href="#{{ list.0 }}" class="card-link">{{ list.0 }}年</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9 my-4">
+                <h2 class="font-weight-normal">归档</h2>
+                {% for list in archives %}
+                <h4 class="my-3" id={{ list.0 }}>{{ list.0 }}年</h4>
+                <ul class="list-group list-group-flush">
+                    {% for subitem in list.1 %}
+                    <li class="list-group-item border-top px-0"><a href="/article/{{ subitem.pk }}" class="card-link">{{ subitem.title }}</a> <span class="ml-3 text-secondary"><i class="fa fa-circle"></i> {{ subitem.sort }}</span> <span class="ml-3 text-secondary"><i class="fa fa-clock-o"></i> {{ subitem.create_time }}</span></li>
+                    {% endfor %}
+                </ul>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

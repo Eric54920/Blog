@@ -1,0 +1,75 @@
+{% extends 'layout/topbar.html' %}
+{% load static %}
+{% load article %}
+
+{% block title %}马国栋的博客 · 首页{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron jumbotron-fluid p-4">
+  <div class="container">
+  <div class="row">
+            <div class="col-md-2 my-3">
+                <img src="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg" class="rounded mx-auto d-block" style="width: 110px;">
+            </div>
+            <div class="col-md-10 my-3 text-center text-sm-left text-md-left">
+                <h2 class="mb-3 font-weight-normal">马国栋</h2>
+                <h6 class="mb-2 font-weight-normal text-secondary">We.changeWorld(code);</h6>
+                <h6 class="mb-0 font-weight-normal text-secondary">文章 <span class="h4 text-dark">{{ data.count }}</span> 篇 · 照片 <span class="h4 text-dark">{{ data.picture_count }}</span> 张</h6>
+            </div>
+        </div>
+  </div>
+</div>
+<div style="min-height:600px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="font-weight-normal mb-0">分类</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in data.sort %}
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-top" href="/?sort={{ item.0.0 }}">{{ item.0.0 }}<span class="badge badge-secondary badge-pill">{{ item.1 }}</span></a>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9 col-12">
+                <ul class="list-group list-group-flush">
+                    {% for article in data.article %}
+                    
+                    <li class="list-group-item px-lg-0 border-top">
+                        <h5 class="mb-2 text-truncate" style="100%"><a href="/article/{{ article.pk }}">{{ article.title }}</a></h5>
+                        <p class="mb-2 text-truncate text-secondary" style="100%">{{ article.abstract }}</p>
+                        <div>
+                            {% for item in article.tags|toLst %}
+                            <a class="topic" href="javascript:;">{{ item }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="d-flex text-secondary">
+                            <div class="mr-3"><i class="fa fa-circle" style="color: {{ sort|color }}"></i> {{ article.sort }}</div>
+                            <div class="mr-3 "><i class="fa fa-clock-o"></i> {{ article.create_time }}</div>
+                        </div>
+                    </li>
+                    
+                    {% endfor %}
+                </ul>
+                <!--分页-->
+                <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                    <ul class="pagination my-4">
+                    {{ data.page_html|safe }}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'layout/topbar.html' %}
+{% load static %}
+
+{% block title %}马国栋的博客 · 相册{% endblock %}
+
+{% block style %}
+<style>
+.jumbotron {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-bottom: 0;
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron h1 {
+  font-weight: 300;
+}
+.jumbotron .container {
+  max-width: 40rem;
+}
+.album {
+  min-height: 800px;
+}
+bg-img {
+  background-size: cover;
+  background-position: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="jumbotron jumbotron-fluid text-center bg-img" style="background-image: url(http://q90vhkwl9.bkt.clouddn.com/norway-4230682_1920.jpg);background-size: cover;background-position: center;">
+    <div class="container">
+        <h1 class="display-4 text-light">
+          相册 · 专题
+        </h1>
+        <p class="lead text-light text-left" style="filter: drop-shadow(2px 4px 6px black); text-indent:32px">我们如同一棵大树的枝叶，尽自己所能开得繁茂一些、再繁茂一些，长长地伸出去，去触碰云朵，去扰乱风儿。我们贪恋阳光和雨露，挽留唱歌的黄鹂鸟，也在暴雨雷电中抖落着身躯。但，我一回头，就看见了你呀。同根同脉，生生不息。</p>
+    </div>
+</section>
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            {% for item in data %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm height-215">
+                    <a href="{% url 'album' item.pk %}" class="bd-placeholder-img card-img-top d-block picture-wrapper shadow-sm text-decoration-none" style="background-image: url({{ item.url }})">
+                        <p class="text-center height-215 text-light hover-show">{{ item.title }}</p>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}

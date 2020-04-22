@@ -1,0 +1,185 @@
+{% extends 'layout/admin.html' %}
+{% load static %}
+
+{% block title %}后台管理 · 评论{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="album_edit">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">评论</h1>
+        <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary removeAll">删除</button>
+        </div>
+    </div>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">选择</th>
+                    <th scope="col">昵称</th>
+                    <th scope="col">文章</th>
+                    <th scope="col">内容</th>
+                    <th scope="col">时间</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.comments %}
+                <tr>
+                    <td><input type="checkbox" value="{{ item.pk }}"></td>
+                    <td>{{ item.nic_name }}</td>
+                    <td><a href="{% url 'article_detail' item.article.pk %}" class="card-link">{{ item.article.title }}</a></td>
+                    <td>{{ item.content }}</td>
+                    <td><span class="text-secondary"><i class="fa fa-clock-o"></i> {{ item.create_time }}</span></td>
+                    <td class="position-relative">
+                        <div class="btn-group position-absolute" role="group" style="top: 7px" aria-label="Basic example">
+                            <button class="btn btn-sm btn-danger delete" data="{{ item.pk }}"><i class="fa fa-trash-o"></i></button>
+                            <button class="btn btn-sm btn-primary reply" data="{{ item.parent }}-{{ item.pk }}-{{ item.article.pk }}" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-commenting-o"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+        <ul class="pagination my-4">
+        {{ data.page_html|safe }}
+        </ul>
+    </nav>
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">评论</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation comment-form" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group mb-0">
+                        <textarea class="form-control" name="content" rows="3" require></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-sm btn-primary submit-comment">评论</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    (function() {
+        deleteComment();
+        removeAll();
+        comment();
+        showCommentPanel();
+    })();
+    function deleteComment() {
+        $('.delete').on('click', function() {
+            id = $(this).attr('data')
+            $.ajax({
+                url: "{% url 'comment_delete' %}",
+                type: 'POST',
+                data: {'id': id},
+                dataType: 'JSON',
+                success: (res) => {
+                    if (res.status == 200) {
+                        $(this).parent().parent().parent().remove();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '该评论已被删除',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                    }
+                }
+            })
+
+        })
+    }
+    function removeAll () {
+        $('.removeAll').on('click', function () {
+            let checkBoxLst = $('tr td input[type=checkbox]:checked');
+            Swal.fire({
+                title: '删除这些评论?',
+                text: "此操作不可逆",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '是，删掉它'
+                }).then((result) => {
+                    if (result.value) {
+                        $.each(checkBoxLst, function(index, item) {
+                            $.ajax({
+                                url: "{% url 'comment_delete' %}",
+                                type: 'POST',
+                                data: {'id': $(item).val()},
+                                dataType: 'JSON',
+                                success: function (res) {
+                                    if (res.status == 200) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '所选评论已被删除',
+                                            showConfirmButton: false,
+                                            timer: 1000
+                                        })
+                                    }
+                                    $(item).parent().parent().remove()
+                                }
+                            })
+                        })
+                    }
+            })
+        })
+    }
+    function showCommentPanel () {
+        $('.reply').on('click', function () {
+            let data = $(this).attr('data').split('-')
+            $('.comment-form').append("<input type='hidden' name='parent' value="+ data[0] +">\
+            <input type='hidden' name='reply' value="+ data[1] +">\
+            <input type='hidden' name='article' value="+ data[2] +">");
+        })
+    }
+    function comment() {
+        $('.submit-comment').on('click', (event) => {
+            let form = $('.comment-form');
+            if (form[0].checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                form[0].classList.add('was-validated');
+            } else {
+                $.ajax({
+                    url: "{% url 'comment_reply' %}",
+                    type: 'POST',
+                    data: $(form[0]).serialize(),
+                    dataType: 'JSON',
+                    success: (res) => {
+                        if (res.status == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '已回复该评论',
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                            $('#staticBackdrop').modal('hide')
+                        }
+                    }
+                });
+            }
+        })
+    }
+</script>
+{% endblock %}

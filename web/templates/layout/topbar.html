@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'plugin/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    {% block style %}
+    <style type="stylesheet/text">
+        
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img src="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg" style="width: 37px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/archives">归档</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/album">相册</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">关于</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+
+    {% endblock %}
+    <div class="jumbotron mb-0 jumbotron-fluid text-light bg-dark">
+        <div class="container">
+            <div class="h3 text-center d-flex justify-content-center">
+                <a href="https://github.com/Eric54920" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-github"></i></a>
+                <a href="https://weibo.com/u/2141997680" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-weibo"></i></a>
+                <a href="mailto:realmaguodong@outlook.com" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-envelope"></i></a>
+                <a href="https://www.instagram.com/guodong_ma/" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-instagram"></i></a>
+                <a href="https://twitter.com/realmaguodong" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=100014614991188" class="center-y d-inline-block mx-2 rounded-circle text-light"><i class="fa fa-facebook-square"></i></a>
+            </div>
+            <h6 class="text-center font-weight-light h6 mb-4"><small>Copyright © 2017-2020 马国栋 All Reversed 京ICP备12314256号</small></h6>
+        </div>
+    </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    {% block script %}
+    
+    {% endblock  %}
+</body>
+</html>

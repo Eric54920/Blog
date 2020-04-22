@@ -1,0 +1,139 @@
+{% extends 'layout/admin.html' %}
+{% load static %}
+
+{% block title %}后台管理 · 相册{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="album">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">相册</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary removeAll">批量删除</button>
+            </div>
+            <a href="{% url 'album_edit' %}" class="btn btn-sm btn-outline-secondary">
+                <svg class="feather bi bi-pencil-square" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" clip-rule="evenodd"/>
+                </svg>
+                新建专题
+            </a>
+        </div>
+    </div>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">选择</th>
+                    <th scope="col">标题</th>
+                    <th scope="col">时间</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.topic %}
+                <tr>
+                    <td><input type="checkbox" value="{{ item.pk }}"></td>
+                    <td><a href="{% url 'album_upload' item.pk %}" class="card-link">{{ item.title }}</a></td>
+                    <td><span class="text-secondary"><i class="fa fa-clock-o"></i> {{ item.create_time }}</span></td>
+                    <td class="position-relative">
+                        <div class="btn-group position-absolute" role="group" style="top: 7px" aria-label="Basic example">
+                    {% if item.is_show %}
+                            <button class="btn btn-sm btn-warning hideIt" data="{{ item.pk }}">隐藏</button>
+                    {% else %}
+                            <button class="btn btn-success btn-sm hideIt" data="{{ item.pk }}">显示</button>
+                    {% endif %}
+                            <a href="/admin/album_edit/?id={{item.pk}}" type="button" class="btn btn-sm btn-primary">编辑</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+        <ul class="pagination my-4">
+        {{ data.page_html|safe }}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function () {
+        hideAlbum();
+        removeAllAlbum();
+    });
+    // 隐藏/显示专题
+    function hideAlbum () {
+        $('.hideIt').on('click', function() {
+            let pk = Number(this.getAttribute('data'));
+            let _this = this
+            $.ajax({
+                url: "/admin/album_hide/" + pk,
+                type: 'POST',
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.status == 200) {
+                        if (res.msg == 'hide') {
+                            Swal.fire(
+                                '已隐藏！',
+                                '你的专题已被隐藏',
+                                'success'
+                            )
+                            $(_this).removeClass('btn-warning').addClass('btn-success').text('显示')
+                        } else {
+                            Swal.fire(
+                                '已显示！',
+                                '你的专题已被显示',
+                                'success'
+                            )
+                            $(_this).removeClass('btn-success').addClass('btn-warning').text('隐藏')
+                        }
+                    }
+                }
+            })
+        })
+    }
+    // 批量删除文章
+    function removeAllAlbum() {
+        $('.removeAll').on('click', function () {
+            let checkBoxLst = $('tr td input[type=checkbox]:checked');
+            Swal.fire({
+                title: '删除这些专题?',
+                text: "此操作不可逆",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '是，删掉它'
+                }).then((result) => {
+                    if (result.value) {
+                        $.each(checkBoxLst, function(index, item) {
+                            $.ajax({
+                                url: "/admin/album_delete/" + $(item).val(),
+                                type: 'POST',
+                                dataType: 'JSON',
+                                success: function (res) {
+                                    if (res.status == 200) {
+                                        Swal.fire(
+                                            '已删除！',
+                                            '你的专题已被删除',
+                                            'success'
+                                        )
+                                    }
+                                    $(item).parent().parent().remove()
+                                }
+                            })
+                        })
+                    }
+            })
+        })
+    }
+</script>
+{% endblock %}
