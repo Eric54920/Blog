@@ -1,0 +1,15 @@
+#pycharm 
+.idea
+.DS_Store
+__pycache__
+*.py[cod] 
+*$py.class
+
+# Django stuff: 
+local_settings.py
+.qiniu_pythonsdk_hostscache.json
+uwsgi.ini
+*.sqlite3
+
+# database migrations
+migrations
