@@ -1,0 +1,69 @@
+{% extends 'layout/topbar.html' %}
+{% load global %}
+{% load static %}
+
+{% block title %}{% site_name %} · 关于博主{% endblock %}
+
+{% block style %}
+<style>
+.jumbotron {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-bottom: 0;
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron h1 {
+  font-weight: 300;
+}
+.jumbotron .container {
+  max-width: 40rem;
+}
+.d-flex span.h6 {
+  width: 60px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about">
+    <div class="container">
+    <div class="row">
+        <div class="col-12 col-md-5 mx-auto text-center">
+            <div class="text-center mx-auto my-4">
+                <div class="jumbotron jumbotron-fluid py-5">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <h1 class="display-4 text-center">关于博主</h1>
+                        </div>
+                    </div>
+                </div>
+                {{  user.intro|safe }}
+                <div class="jumbotron jumbotron-fluid py-5">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <h1 class="display-5 text-center">技术栈</h1>
+                        </div>
+                    </div>
+                </div>
+                {{ user.skill|safe }}
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

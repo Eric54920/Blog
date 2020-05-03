@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+{% load global %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% site_verification %}
+    <link rel="icon" href="{{ 'icon'|logo }}">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugin/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/offcanvas.css' %}">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    {% block style %}{% endblock %}
+</head>
+<body>
+<div class="nav-scroller bg-white shadow-sm">
+  <div class="container">
+    <nav class="nav nav-underline">
+      <a class="bg-white navbar-brand py-1 shadow-none m-0" href="#"><img src="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg" style="width: 37px;"></a>
+      <a class="nav-link active" href="#">博客后台</a>
+      <a class="nav-link" href="/admin/dashboard">概览</a>
+      <a class="nav-link" href="/admin/article">文章</a>
+      <a class="nav-link" href="/admin/comment">评论</a>
+      <a class="nav-link" href="/admin/album">相册</a>
+      <a class="nav-link" href="/admin/about">关于</a>
+      <a class="nav-link" href="/">首页</a>
+      <a class="nav-link" href="/admin/logout/">退出</a>
+    </nav>
+  </div>
+</div>
+<div>
+  <div class="container">
+      {% block content %}{% endblock %}
+  </div>
+</div>
+    <script src="https://cdn.bootcss.com/popper.js/1.15.0/umd/popper.js"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+    <script src="{% static 'js/feather.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    {% block script %}{% endblock %}
+</body>
+</html>

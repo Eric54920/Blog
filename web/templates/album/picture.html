@@ -1,0 +1,84 @@
+{% extends 'layout/topbar.html' %}
+{% load static %}
+{% load global %}
+{% load album %}
+
+{% block title %}{% site_name %} · 照片{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+<style>
+.gradient-dark-bottom {
+    background-image: linear-gradient(to bottom, #868f9600 0%, #596164 120%);
+}
+.picture-wrapper {
+    height: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('http://q90vhkwl9.bkt.clouddn.com/502421cd-9747-4604-b19a-940d0cde9239.jpg');
+}
+.picture {
+    min-height: 800px;
+}
+.picture-intro {
+    width: 345px;
+}
+.height-215 {
+    height: 215px;
+}
+.fancybox-slide--video .fancybox-content {
+	width  : 600px;
+	height : 400px;
+	max-width  : 80%;
+	max-height : 80%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="picture">
+    <div class="container">
+
+        <h2 class="font-weight-normal mt-5">{{ data.topic.title }}</h2>
+        <p class="mb-2 text-secondary"><span><i class="fa fa-clock-o"></i> {{ data.topic.create_time }}</span></p>
+        <p class="mb-2 text-secondary">{{ data.topic.intro }}</p>
+        <div class="row mb-3">
+        {% if data.pictures %}
+            {% for item in data.pictures %}
+                <div class="col-md-4 col-sm-12 col-12 mt-4 position-relative height-215">
+                    <a href="{{ item.url }}" data-caption="{{ item.intro }}" class="d-block picture-wrapper shadow" data-fancybox="gallery"
+                    style="background-image:url({% bgimg item.url %})">
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-6 col-sm-12 col-12 offset-3 text-center text-muted">
+                <h1 class="font-weight-light">还没上传过照片哦～</h1>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+$('[data-fancybox]').fancybox({
+    toolbar : true,
+    controls : 0,
+    showinfo : 0,
+    autoplay: false,
+    color : 'f00',
+    buttons : [
+        'slideShow',
+        'fullScreen',
+        'thumbs',
+        'share',
+        'download',
+        'zoom',
+        'close'
+    ]
+});
+</script>
+{% endblock %}

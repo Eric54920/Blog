@@ -1,0 +1,263 @@
+{% extends 'layout/topbar.html' %}
+{% load article %}
+{% load global %}
+{% load static %}
+
+{% block title %}{% site_name %} · 文章{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/content.css' %}">
+<link rel="stylesheet" href="{% static 'plugin/highlight/styles/isbl-editor-light.css' %}">
+<style>
+.hide {
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 mt-4">
+                <div class="border rounded p-3 mb-3">
+                    <h6 class="font-weight-normal mb-2 text-dark">目录</h6>
+                    <ul class="m-0 p-0" style="list-style: none;">
+                        {% for cate in data.catelog %}
+                        <li class="py-1 font-weight-normal">
+                            <a class="align-items-center text-primary list-group-item list-group-item-action px-2 py-1 rounded" href="#{{ cate.id }}">{{ cate.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9 my-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>{{ data.article.title }}</h2>
+                        <div class="mb-2">
+                            {% for item in data.article.tags|toLst %}
+                            <a class="topic" href="javascript:;">{{ item }}</a>
+                            {% endfor %}
+                        </div>
+                        <hr>
+                        <h3>摘要</h3>
+                        <p class="abstract">{{ data.article.abstract }}</p>
+                        <hr>
+                        <div class="content">
+                            {{ data.article.content_html|safe }}
+                        </div>
+                    </div>
+                </div>
+                <!--评论-->
+                <h4 class="my-4">评论 
+                    <i class="fa fa-commenting"></i>
+                </h4>
+                <div class="card my-4">
+                    <div class="card-body hook">
+                        <form class="root needs-validation mb-3 clearfix" name="comment" novalidate>
+                            <div class="form-row">
+                                <div class="col-12 col-md-4 col-sm-12 mb-2">
+                                    {{ data.comment_form.nic_name }}
+                                </div>
+                                <div class="col-12 col-md-4 col-sm-12 mb-2">
+                                    {{ data.comment_form.email }}
+                                </div>
+                                <div class="col-12 col-md-4 col-sm-12 mb-2">
+                                    {{ data.comment_form.web_site }}
+                                </div>
+                            </div>
+                            <div class="form-row mb-2">
+                                <div class="col-12">
+                                    {{ data.comment_form.content }}
+                                </div>
+                            </div>
+                            <a href="javascript:;" class="btn btn-dark btn-sm float-right root-comment" role="button">
+                                <i class="fa fa-send"></i> 评论
+                            </a>
+                        </form>
+                        {% for comment in data.comments %}
+                        <div class="media mb-2" id="{{ comment.pk }}">
+                            <span class="avatar font-weight-normal h4 img-thumbnail mr-3 text-center text-light" style="background: {{ comment.nic_name|avatarColor }}">{{ comment.nic_name|first }}</span>
+                            <div class="media-body">
+                                <h5 class="mt-2 mb-1"><a class="text-decoration-none text-primary small" href="{{ comment.web_site }}">{{ comment.nic_name }}{% if comment.user == '1' %}(博主){% endif %}</a></h5>
+                                <p class="mb-1">{{ comment.content }}</p>
+                                <div class="hook mb-2"><a class="text-decoration-none text-secondary reply" data="{{ comment.pk }}" href="javascript:;">回复</a> · <span class="text-secondary">{{ comment.ctime }}</span></div>
+                                {% for sub in comment.sub_comments %}
+                                <div class="media mb-2" id="{{ comment.pk }}-{{ sub.pk }}">
+                                    <span class="avatar font-weight-normal h4 img-thumbnail mr-3 text-center text-light" style="background: {{ comment.nic_name|avatarColor }}">{{ sub.nic_name|first }}</span>
+                                    <div class="media-body">
+                                        <h5 class="mt-2 mb-1">
+                                            <a class="text-decoration-none text-primary small" href="{{ sub.web_site }}">{{ sub.nic_name }}{% if sub.user == '1' %}(博主){% endif %}</a> 
+                                            {% if sub.reply_to %}
+                                                <small class="text-muted">回复</small>
+                                                <a class="text-decoration-none text-primary small" href="{{ sub.reply_web_site }}">{{ sub.reply_to }}{% if sub.reply_user == '1' %}(博主){% endif %}</a>
+                                            {% endif %}
+                                        </h5>
+                                        <p class="mb-1">{{ sub.content }}</p>
+                                        <div class="hook"><a class="text-decoration-none text-secondary reply" data="{{ comment.pk }}-{{ sub.pk }}" href="javascript:;">回复</a> · <span class="text-secondary">{{ sub.ctime }}</span></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+<!-- 评论表单模版 -->
+<form id="form" class="needs-validation hide" name="comment" novalidate>
+    <div class="form-row">
+        <div class="col-12 col-md-4 col-sm-12 mb-2">
+            {{ data.comment_form.nic_name }}
+        </div>
+        <div class="col-12 col-md-4 col-sm-12 mb-2">
+            {{ data.comment_form.email }}
+        </div>
+        <div class="col-12 col-md-4 col-sm-12 mb-2">
+        <div class="input-group">
+            {{ data.comment_form.web_site }}
+        </div>
+        </div>
+    </div>
+    <div class="form-row mb-2">
+        <div class="col-12">
+            {{ data.comment_form.content }}
+        </div>
+    </div>
+    <a href="javascript:;" class="btn btn-dark btn-sm float-right comment" role="button"><i class="fa fa-send"></i> 评论</a>
+    <a href="javascript:;" class="btn btn-info btn-sm float-right mr-2 cancel" role="button"><i class="fa fa-times-circle"></i> 取消</a>
+</form>
+<!-- 根评论模版 -->
+<div class="root-tpl media mb-3 hide">
+    <span class="avatar font-weight-normal h4 img-thumbnail mr-3 text-center text-light" style="background: {{ comment.nic_name|avatarColor }}"></span>
+    <div class="media-body">
+        <h5 class="mt-2"><a class="nic_name text-decoration-none text-primary small"></a></h5>
+        <p class="content mb-1"></p>
+        <div class="hook mb-2"><a class="text-decoration-none text-secondary reply" href="javascript:;">回复</a> · <span class="text-secondary ctime"></span></div>
+    </div>
+</div>
+<!-- 子评论模版 -->
+<div class="sub-tpl media mb-2 hide">
+    <span class="avatar font-weight-normal h4 img-thumbnail mr-3 text-center text-light" style="background: {{ comment.nic_name|avatarColor }}"></span>
+    <div class="media-body">
+        <h5 class="reply-to mt-2">
+            <a class="nic_name text-decoration-none text-primary small"></a> 
+        </h5>
+        <p class="content mb-1"></p>
+        <div class="hook"><a class="text-decoration-none text-secondary reply" href="javascript:;">回复</a> · <span class="text-secondary ctime"></span></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'plugin/highlight/highlight.pack.js' %}"></script>
+<script>
+	(function() {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
+        reply();
+        comment();
+        cancelComment();
+	})();
+    function reply() {
+        $('.card-body').on('click', '.reply', function() {
+            // 清除原来的表单
+            if ($('.comment-form')) {
+                $('.comment-form').remove()
+            }
+            let data = this.getAttribute('data').split("-")
+            let parent = data[0]
+            let reply = data[1] ? data[1] : 0
+            let form = $('#form').clone()
+            $(form).removeClass('hide').addClass('comment-form')
+            $(this).parent().append(form)
+
+            let forms = $('.comment-form');
+            $(forms).append("<input type='hidden' name='parent' value="+ parent +">\
+            <input type='hidden' name='reply' value="+ reply +">")
+            $('.comment').on('click', function(event) {
+                if (forms[0].checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    forms[0].classList.add('was-validated');
+                } else {
+                    $.ajax({
+                        url: "{% url 'comment' data.article.pk %}",
+                        type: 'POST',
+                        data: $(forms[0]).serialize(),
+                        dataType: 'JSON',
+                        success: (res) => {
+                            if (res.status == 200) {
+                                let sub_tpl = $('.sub-tpl').clone();
+                                sub_tpl.removeClass('hide sub-tpl');
+                                sub_tpl.attr({'id': res.comment.parent + '-' + res.comment.pk})
+                                sub_tpl.find('.avatar').text(res.comment.nic_name[0])
+                                sub_tpl.find('.nic_name').text(res.comment.nic_name).attr({'href': res.comment.web_site})
+                                sub_tpl.find('.content').text(res.comment.content)
+                                sub_tpl.find('.reply').attr({'data': res.comment.parent + '-' + res.comment.pk})
+                                sub_tpl.find('.ctime').text(res.comment.ctime)
+                                if (res.comment.reply != 0) {
+                                    // 判断被回复的人是否为博主
+                                    let isadmin = res.comment.reply_to.user == '1' ? '(博主)' : '';
+                                    sub_tpl.find('.reply-to').append('<small class="text-muted">回复</small>\
+                <a class="text-decoration-none text-primary small" href='+ res.comment.reply_to.web_site +'>'+ res.comment.reply_to.nic_name + isadmin +'</a>')
+                                    $('#'+ res.comment.parent +'-'+ res.comment.reply).parent().append(sub_tpl)
+                                }
+                                $('#'+ res.comment.parent + ">.media-body").append(sub_tpl)
+                                $('.comment-form').remove()
+                            } else {
+
+                            }
+                        }
+                    })
+                }
+            });
+        })
+    }
+    function comment() {
+        $('.root-comment').on('click', (event) => {
+            let form = $('.root');
+            if (form[0].checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                form[0].classList.add('was-validated');
+            } else {
+                $.ajax({
+                    url: "{% url 'comment' data.article.pk %}",
+                    type: 'POST',
+                    data: $(form[0]).serialize(),
+                    dataType: 'JSON',
+                    success: (res) => {
+                        if (res.status == 200) {
+                            let root_tpl = $('.root-tpl').clone();
+                            root_tpl.removeClass('hide root-tpl');
+                            root_tpl.attr({'id': res.comment.pk});
+                            root_tpl.find('.avatar').text(res.comment.nic_name[0])
+                            root_tpl.find('.nic_name').attr({'href': res.comment.web_site}).text(res.comment.nic_name)
+                            root_tpl.find('.content').text(res.comment.content)
+                            root_tpl.find('.reply').attr({'data': res.comment.pk})
+                            root_tpl.find('.ctime').text(res.comment.ctime)
+                            $('.card > .hook').append(root_tpl)
+                            form[0].reset();
+                        }
+                    }
+                })
+            }
+        })
+    }
+    function cancelComment() {
+        $('.card .media-body > .hook').on('click', '.cancel',  function () {
+            if ($('.comment-form')) {
+                $('.comment-form').remove()
+            }
+        })
+    }
+</script>
+{% endblock %}

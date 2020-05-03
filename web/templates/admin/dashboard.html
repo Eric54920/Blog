@@ -1,0 +1,64 @@
+{% extends 'layout/admin.html' %}
+{% load static %}
+
+{% block title %}后台管理 · 概览{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">概览</h1>
+    </div>
+    <div class="row text-center text-muted">
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">文章 <span class="text-info">{{ context.article_count }}</span> 篇</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">专题 <span class="text-info">{{ context.topic_count }}</span> 个</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">照片 <span class="text-info">{{ context.picture_count }}</span> 张</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">分类 <span class="text-info">{{ context.sort_count }}</span> 个</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">评论 <span class="text-info">{{ context.comment_count }}</span> 条</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="jumbotron">
+                <div class="container">
+                    <h3 class="display-6">上次发布 <span class="text-info">{{ context.prev_pub_date }}</span> </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

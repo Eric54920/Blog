@@ -1,0 +1,191 @@
+{% extends 'layout/admin.html' %}
+{% load static %}
+
+{% block title %}后台管理 · 编辑文章{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.min.css' %}" />
+<link rel="stylesheet" href="{% static 'plugin/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugin/bootstrap-select/css/bootstrap-select.min.css' %}">
+<style>
+    .editormd-fullscreen {
+        z-index: 9999;
+    }
+    .tag {
+        height: 100%;
+        vertical-align: super;
+        line-height: 18px;
+    }
+    .tag:hover .close-btn {
+        display: block;
+    }
+    .close-btn {
+        width: 15px;
+        height: 15px;
+        top: -7px;
+        right: -7px;
+        line-height: 15px;
+        font-size: 13px;
+        display: none;
+        border-radius: 50%;
+        background: #dc3545;
+        z-index: 99;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">编辑文章</h1>
+        <a href="javascript:document.form.submit();" class="btn btn-sm btn-outline-secondary article-submit">
+            <svg class="feather bi bi-pencil-square" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" clip-rule="evenodd"/>
+            </svg>
+            保存
+        </a>
+    </div>
+    <form id="form" class="clearfix" name="form" method="post" action="#">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+            {{ form.title }}
+            <span class="text-danger">{{ form.title.errors.0 }}</span>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.abstract.id_for_label}}">{{ form.abstract.label }}</label>
+            {{ form.abstract }}
+            <span class="text-danger">{{ form.abstract.errors.0 }}</span>
+        </div>
+        <div class="form-row">
+            <div class="col col-12 col-md-2 mb-3">
+                <label for="{{ form.create_time.id_for_label }}">{{ form.create_time.label }}</label>
+                {{ form.create_time }}
+                <span class="text-danger">{{ form.create_time.errors.0 }}</span>
+            </div>
+            <div class="col col-12 col-md-2 mb-3">
+                <label for="{{ form.sort.id_for_label }}">{{ form.sort.label }}</label>
+                {{ form.sort }}            
+                <span class="text-danger">{{ form.sort.errors.0 }}</span>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label for="exampleFormControlTextarea1">已添加的标签</label>
+                {{ form.tags }}
+                <h5 class="form-control tag-wrapper mb-0"></h5>
+                <span class="text-danger">{{ form.tags.errors.0 }}</span>
+            </div>
+            <div class="col col-12 col-md-2 mb-3">
+                <label for="{{ form.tags.id_for_label }}">{{ form.tags.label }}</label>
+                <div class="input-group">
+                    <input type="text" class="form-control tag-input" placeholder="标签" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" id="addTag" type="button">
+                            <svg class="feather bi bi-plus-circle" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+            <div id="editor">
+                {{ form.content }}
+                <textarea class="editormd-html-textarea" name="content_html" cols="30" rows="10"></textarea>
+            </div>
+            <span class="text-danger">{{ form.content.errors.0 }}</span>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'plugin/editor-md/editormd.min.js' %}"></script>
+<script src="{% static 'plugin/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'plugin/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
+<script src="{% static 'plugin/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'plugin/bootstrap-select/js/i18n/defaults-zh_CN.min.js' %}"></script>
+<script>
+    const UPLOAD_URL = "{% url 'file_upload' %}";
+    $(function () {
+        initDatePicker();
+        initEditor();
+        formSubmit();
+        addTag();
+        removeTag();
+        initTags();
+    });
+    // 初始化编辑器
+    function initEditor () {
+        var editor = editormd("editor", {
+            placeholder: "请输入内容",
+            height: 500,
+            emoji: true,
+            saveHTMLToTextarea : true,
+            path: "{% static 'plugin/editor-md/lib/' %}",
+            imageUpload:true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: UPLOAD_URL
+        });
+    }
+    // 添加对话框：初始化时间选择
+    function initDatePicker() {
+        $('#pub-time').datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: "1970-1-1",
+            language: "zh-CN",
+            autoclose: true,
+            todayHighlight: true
+        });
+    }
+    // 表单提交
+    function formSubmit() {
+        $('#article-submit').on('click', function () {
+            console.log(editor.getHTML());
+        })
+    }
+    // 初始化标签
+    function initTags() {
+        let allTags = $('.all-tags')[0].value;
+        if (!allTags == "") {
+            let tag_list = allTags.split('|')
+            for (tagVal in tag_list) {
+                $('.tag-wrapper').append("<span class='tag text-light badge badge-secondary position-relative mr-1'>"+ tag_list[tagVal] +"<i class='fa fa-close position-absolute close-btn'></i></span>");
+            }
+        }
+    }
+    // 添加标签
+    function addTag () {
+        $('#addTag').on('click', function () {
+            tagVal = $('.tag-input').val();  // 输入的值
+            let allTags = $('.all-tags')[0].value;  // 原有的值
+            console.log(allTags)
+            if (allTags != "") {
+                allTags += `|${tagVal}`
+            } else {
+                allTags = tagVal;
+            }
+            $('.tag-input')[0].value = "";
+            $('.all-tags')[0].value = allTags;
+            $('.tag-wrapper').append("<span class='tag text-light badge badge-secondary position-relative mr-1'>"+ tagVal +"<i class='fa fa-close position-absolute close-btn'></i></span>");
+        })
+    }
+    // 删除标签
+    function removeTag () {
+        $('.tag-wrapper').on('click', 'span i', function (e) {
+            closeBtnList = $('.close-btn');
+            let index = closeBtnList.index(e.target);
+            let allTags = $('.all-tags')[0].value;
+            let tagList = allTags.split('|');
+            tagList.splice(index, 1); 
+            $('.tag-wrapper .tag')[index].remove();
+            $('.all-tags')[0].value = tagList.join('|');
+        });
+    }
+</script>
+{% endblock %}

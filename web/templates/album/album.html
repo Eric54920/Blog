@@ -1,0 +1,73 @@
+{% extends 'layout/topbar.html' %}
+{% load static %}
+{% load global %}
+{% load album %}
+
+{% block title %}{% site_name %} · 相册{% endblock %}
+
+{% block style %}
+<style>
+.jumbotron {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-bottom: 0;
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron h1 {
+  font-weight: 300;
+}
+.jumbotron .container {
+  max-width: 40rem;
+}
+.album {
+  min-height: 800px;
+}
+bg-img {
+  background-size: cover;
+  background-position: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="jumbotron jumbotron-fluid text-center bg-img" style="background-image: url({% album_headimg %});background-size: cover;background-position: center;">
+    <div class="container">
+        <h1 class="display-4 text-light">
+          相册 · 专题
+        </h1>
+        <p class="lead text-light text-left" style="text-indent:32px">{% album_desc %}</p>
+    </div>
+</section>
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row mb-1">
+            {% for item in data %}
+            <div class="col-md-4 mb-3">
+                <div class="card mb-1 shadow-sm height-215 border-0">
+                    <a href="{% url 'album' item.pk %}" class="rounded-0 bd-placeholder-img card-img-top d-block picture-wrapper shadow-sm text-decoration-none"
+                     style="background-image: url({% bgimg item.url %})">
+                        <p class="text-center height-215 text-light hover-show m-0">{{ item.title }}</p>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}
