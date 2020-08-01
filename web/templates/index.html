@@ -32,7 +32,7 @@
                     <h6 class="font-weight-normal mb-2 text-dark">分类</h6>
                     <ul class="m-0 p-0" style="list-style: none;">
                         {% for item in data.sort %}
-                        <li class="py-1">
+                        <li>
                             <a class="align-items-center d-flex font-weight-normal justify-content-between list-group-item list-group-item-action px-2 py-1 rounded" href="/?sort={{ item.0.0 }}">{{ item.0.0 }}<span class="badge badge-secondary badge-pill">{{ item.1 }}</span></a>
                         </li>
                         {% endfor %}
@@ -54,8 +54,8 @@
                     {% for article in data.article %}
                     
                     <li class="list-group-item px-lg-0 border-top">
-                        <h5 class="mb-2 text-truncate" style="100%"><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h5>
-                        <p class="mb-2 text-truncate text-secondary" style="100%">{{ article.abstract }}</p>
+                        <h5 class="mb-2 py-1 text-truncate"><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h5>
+                        <p class="mb-2 text-truncate text-secondary">{{ article.abstract }}</p>
                         <div>
                             {% for item in article.tags|toLst %}
                             <a class="topic" href="javascript:;">{{ item }}</a>

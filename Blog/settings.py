@@ -112,12 +112,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-COLOR_LIST = {'Python':'#3572A5', 'HTML':'#e34c26', 'JavaScript': '#f1e05a', 'CSS': '#563d7c', 'PHP':'#4F5D95',
+COLOR_LIST = {'Python': '#3572A5', 'HTML': '#e34c26', 'JavaScript': '#f1e05a', 'CSS': '#563d7c', 'PHP':'#4F5D95',
               'Vue': '#2c3e50', 'C++': '#f34b7d', 'C#': '#178600', 'Kotlin': '#F18E33', 'Java': '#b07219',
               'Go': '#00ADD8', 'Swift': '#ffac45', 'Shell': '#89e051', 'Lua': '#000080', 'C': '#555555',
               'Perl': '#0298c3', 'Scala': '#c22d40', 'Objective-C': '#438eff', 'Ruby': '#701516', 'Linux': '#f6bf03',
               '爬虫': '#b02f2f', '网络': '#60a9f5', '算法': '#902ea1', 'TypeScript': '#2b7489', 'MySQL': '#d28a36',
-              '机器学习': '#7ac32b', 'Redis': '#d70b0b', '数据分析': '#08a371', 'Django': '#0C4B33'}
+              '机器学习': '#7ac32b', 'Redis': '#d70b0b', '数据分析': '#08a371', 'Django': '#0C4B33', 'Docker': '#0073EC', 'Git': '#d83812'}
 
 
 # 白名单

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-{% load static %}
 {% load global %}
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
 <div class="nav-scroller bg-white shadow-sm">
   <div class="container">
     <nav class="nav nav-underline">
-      <a class="bg-white navbar-brand py-1 shadow-none m-0" href="#"><img src="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg" style="width: 37px;"></a>
+      <a class="bg-white navbar-brand py-1 shadow-none m-0" href="#"><img src="{{ 'logo'|logo }}" style="width: 37px;"></a>
       <a class="nav-link active" href="#">博客后台</a>
       <a class="nav-link" href="/admin/dashboard">概览</a>
       <a class="nav-link" href="/admin/article">文章</a>

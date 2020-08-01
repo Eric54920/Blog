@@ -14,47 +14,68 @@
         <h1 class="h2">相册</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary removeAll">批量删除</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#addPicturesModal"><i class="fa fa-plus-circle"></i> 添加照片</button>
+            </div>
+
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary removeAll"><i class="fa fa-trash-o"></i> 批量删除</button>
             </div>
             <a href="javascript:document.form.submit();" class="btn btn-sm btn-outline-secondary">
-                <svg class="feather bi bi-pencil-square" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" clip-rule="evenodd"/>
-                </svg>
-                保存
+                <i class="fa fa-upload"></i>
+                保存修改
             </a>
         </div>
     </div>
-    <div class="input-group mb-3">
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file_uploader" multiple>
-            <label class="custom-file-label" for="file_uploader" aria-describedby="file_uploader">Choose file</label>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addPicturesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">添加图片</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form id="pictureForm">
+                  <div class="form-group mb-0">
+                    <label for="pictureTextarea">请输入资源路径（多个资源换行）</label>
+                    <textarea class="form-control" id="pictureTextarea" rows="3" name="paths"></textarea>
+                      <input type="hidden" name="album" value="{{ album }}">
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary add-picture">添加</button>
+          </div>
         </div>
+      </div>
     </div>
+
     <form action="" name="form" method="post">
         <div class="row mb-5 pictures">
             {% for item in data %}
                 <div class="col-12 col-sm-6 col-md-4">
                     <div class="card shadow-sm height-215 position-realtive">
-                        <a href="javascript:;" class="bd-placeholder-img card-img-top d-block picture-wrapper shadow-sm text-decoration-none" style="background-image:url({{ item.url|bgimg }})"></a>
+                        <a href="javascript:;" class="bd-placeholder-img card-img-top d-block picture-wrapper shadow-sm text-decoration-none" style="background-image:url({% bgimg item.url %})"></a>
                         <input type="checkbox" class="position-absolute" style="left:10px;top:10px" value="{{ item.pk }}">
-                        {% if item.is_show %}
-                        <a type="button" class="btn btn-sm btn-warning text-light position-absolute hideIt" data="{{ item.pk }}" style="right:10px;top:10px">隐藏</a>
-                        {% else %}
-                        <a type="button" class="btn btn-sm btn-success text-light position-absolute hideIt" data="{{ item.pk }}" style="right:10px;top:10px">显示</a>
-                        {% endif %}
+                        <a type="button" class="btn btn-sm {% if item.is_show %} btn-warning {% else %} btn-success {% endif %} text-light position-absolute hideIt" data="{{ item.pk }}" style="right:10px;top:10px">
+                            {% if item.is_show %} <i class="fa fa-eye-slash"></i> {% else %} <i class="fa fa-eye"></i> {% endif %}
+                        </a>
                     </div>
                     <div class="form-group">
                         <input type="hidden" class="form-control url" value="{{ item.url }}" name="url" placeholder="照片url">
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" name="intro" row="20" placeholder="照片描述">{{ item.intro }}</textarea>
+                        <textarea class="form-control" name="intro" row="20" placeholder="添加照片描述">{{ item.intro|default:'' }}</textarea>
                     </div>
                 </div>
             {% endfor %}
         </div>
     </form>
+
     <div class="row mb-5 invisible tpl">
         <div class="col-12 col-sm-6 col-md-4">
             <div class="card shadow-sm height-215">
@@ -81,28 +102,24 @@ $(function() {
     removeAllPicture();
 });
 function ChooseFile() {
-    $('#file_uploader').on('change', function() {
-        let fileList = $(this)[0].files;
-        $.each(fileList, function(index, fileObject) {
-            let formdata = new FormData()
-            formdata.append('file', fileObject)
-            $.ajax({
-                url: '/admin/picture_upload/',
-                type: 'POST',
-                dataType: 'JSON',
-                data: formdata,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                    if (res.success == 1) {
-                        let tpl = $('.tpl > div').clone()
-                        tpl.find('.picture-wrapper').css({'backgroundImage': 'url('+ res.url +')'})
-                        tpl.find('.url')[0].value = res.url
-                        tpl.find('.btn').attr('data', res.pk)
-                        $('.pictures').append(tpl)
+    $('.add-picture').on('click', function() {
+        let form = $("#pictureForm");
+        $.ajax({
+            url: '/admin/picture_upload/',
+            type: 'POST',
+            dataType: 'JSON',
+            data: form.serialize(),
+            success: function (res) {
+                if (res.success == 1) {
+                    for (let i=0; i<res.url.length; i++) {
+                        let tpl = $('.tpl > div').clone();
+                        tpl.find('.picture-wrapper').css({'backgroundImage': 'url('+ res.url[i] +')'});
+                        tpl.find('.url')[0].value = res.url;
+                        tpl.find('.btn').attr('data', res.pk);
+                        $('.pictures').append(tpl);
                     }
                 }
-            })
+            }
         })
     })
 }
@@ -122,15 +139,15 @@ function hidePicture () {
                             '已隐藏！',
                             '你的照片已被隐藏',
                             'success'
-                        )
-                        $(_this).removeClass('btn-warning').addClass('btn-success').text('显示')
+                        );
+                        $(_this).removeClass('btn-warning').addClass('btn-success').empty().append('<i class="fa fa-eye"></i>');
                     } else {
                         Swal.fire(
                             '已显示！',
                             '你的照片已被显示',
                             'success'
-                        )
-                        $(_this).removeClass('btn-success').addClass('btn-warning').text('隐藏')
+                        );
+                        $(_this).removeClass('btn-success').addClass('btn-warning').empty().append('<i class="fa fa-eye-slash"></i>');
                     }
                 }
             }

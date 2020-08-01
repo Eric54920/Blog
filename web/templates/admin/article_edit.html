@@ -164,7 +164,6 @@
         $('#addTag').on('click', function () {
             tagVal = $('.tag-input').val();  // 输入的值
             let allTags = $('.all-tags')[0].value;  // 原有的值
-            console.log(allTags)
             if (allTags != "") {
                 allTags += `|${tagVal}`
             } else {

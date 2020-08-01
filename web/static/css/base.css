@@ -50,10 +50,9 @@
 }
 .hover-show {
     transition: all 0.5s;
-    background: #000;
+    background: #00000061;
     opacity: 0;
 }
 .hover-show:hover {
     opacity: 1;
-    background: #00000061;
 }

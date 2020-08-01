@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>站长登录</title>
-    <link rel="icon" href="{{ 'icon'|logo }}">
+    <link rel="icon" href="{{ 'logo'|logo }}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/flaoting-labels.css' %}">
@@ -23,7 +23,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/home"><img src="http://q90vhkwl9.bkt.clouddn.com/010a2b564548466ac7259e0fe9566e.jpg%402o.jpg" style="width: 37px;"></a>
+            <a class="navbar-brand" href="/home"><img src="{{ 'avatar'|logo }}" style="width: 37px;"></a>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item active">

@@ -46,7 +46,7 @@
         {% if data.pictures %}
             {% for item in data.pictures %}
                 <div class="col-md-4 col-sm-12 col-12 mt-4 position-relative height-215">
-                    <a href="{{ item.url }}" data-caption="{{ item.intro }}" class="d-block picture-wrapper shadow" data-fancybox="gallery"
+                    <a href="{{ item.url }}" data-caption="{{ item.intro|default:'' }}" class="d-block picture-wrapper shadow" data-fancybox="gallery"
                     style="background-image:url({% bgimg item.url %})">
                     </a>
                 </div>

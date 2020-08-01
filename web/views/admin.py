@@ -8,7 +8,7 @@ from web.forms.album import AlbumForm
 from web.forms.about import AboutForm
 from web import models
 from web.utils.pagination import Pagination
-from web.utils.qiniu import upload, get_token, delete_file
+
 
 def login(request):
     """登录"""
@@ -211,11 +211,11 @@ def album_edit(request):
 
 @csrf_exempt
 def album_upload(request, *args, **kwargs):
-    """上传照片到相册专题"""
+    """专题中照片的操作"""
     album_id = kwargs.get('id')
     if request.method == "GET":
         pictures = models.Pictures.objects.filter(album=album_id).values('pk', 'url', 'intro', 'is_show')
-        return render(request, 'admin/upload.html', {'data': pictures})
+        return render(request, 'admin/upload.html', {'data': pictures, 'album': album_id})
 
     data = []
     for i in request.POST.lists():
@@ -234,22 +234,28 @@ def album_upload(request, *args, **kwargs):
 
 @csrf_exempt
 def picture_upload(request):
-    """文件上传"""
+    """保存图片"""
     result = {
         'success': 0,
         'massage': None,
         'url': None
     }
-    image_object = request.FILES.get('file')
+    image_object = request.POST.get('paths')
+    album_id = request.POST.get('album')
     if not image_object:
-        result['message'] = '文件不存在'
+        result['success'] = 0
+        result['message'] = '数据不存在'
         return JsonResponse(result)
-    ext = image_object.name.split('.')[-1]
-    key = "{}.{}".format(uuid.uuid4(), ext)
-    # qiniu upload method
-    ret, info = upload(key, image_object, image_object.name, image_object.size)
+
+    images = image_object.split('\r\n')
+    pictures = []
+    for image in images:
+        picture = models.Pictures(album_id=album_id, url=image)
+        pictures.append(picture)
+    models.Pictures.objects.bulk_create(pictures)
     result['success'] = 1
-    result['url'] = "http://q90vhkwl9.bkt.clouddn.com/" + key
+    result['message'] = '保存成功'
+    result['url'] = images
     return JsonResponse(result)
 
 @csrf_exempt
