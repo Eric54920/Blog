@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect, reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count
 import uuid
 from web.forms.login import LoginForm
 from web.forms.article import ArticleForm
@@ -8,6 +9,9 @@ from web.forms.album import AlbumForm
 from web.forms.about import AboutForm
 from web import models
 from web.utils.pagination import Pagination
+import datetime
+import json
+
 
 
 def login(request):
@@ -36,13 +40,26 @@ def logout(request):
 
 def dashboard(request):
     article = models.Article.objects.all()
+
+    # 当前时期
+    year, month, day = datetime.datetime.now().strftime("%Y-%m-%d").split('-')
+    start_date = datetime.date(int(year)-1, int(month), int(day)).strftime("%Y-%m-%d")
+    end_date = datetime.date(int(year), int(month), int(day)).strftime("%Y-%m-%d")
+    data = models.Article.objects.filter(create_time__range=(start_date, end_date)).values('create_time').annotate(count=Count('sort')).order_by('create_time').values_list('create_time', 'count')
+    series = []
+    for i in data:
+        date = i[0].strftime("%Y-%m-%d")
+        series.append([date, i[1]])
+
     context = {
         "article_count": article.count(),
         "topic_count": models.Album.objects.all().count(),
         "picture_count": models.Pictures.objects.all().count(),
         "sort_count": len(set(article.values_list('sort'))),
         "prev_pub_date": article.order_by('create_time').last().create_time,
-        "comment_count": models.ArticleComments.objects.all().count()
+        "comment_count": models.ArticleComments.objects.all().count(),
+        "cimmit_history": series,
+        "time_range": [start_date, end_date]
     }
 
     return render(request, 'admin/dashboard.html', {'context': context})

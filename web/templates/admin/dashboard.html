@@ -8,57 +8,115 @@
 {% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">概览</h1>
+    <div class="dashboard">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">概览</h1>
+        </div>
+        <div class="row text-center text-muted">
+            <p>过去一年内发表记录</p>
+            <div style="height:200px;width:100%;">
+                <div id="calendarContainer" style="height: 100%;width: 100%"></div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">文章 <span class="text-info">{{ context.article_count }}</span> 篇</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">专题 <span class="text-info">{{ context.topic_count }}</span> 个</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">照片 <span class="text-info">{{ context.picture_count }}</span> 张</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">分类 <span class="text-info">{{ context.sort_count }}</span> 个</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">评论 <span class="text-info">{{ context.comment_count }}</span> 条</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="jumbotron">
+                    <div class="container">
+                        <h3 class="display-6">上次发布 <span class="text-info">{{ context.prev_pub_date }}</span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row text-center text-muted">
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">文章 <span class="text-info">{{ context.article_count }}</span> 篇</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">专题 <span class="text-info">{{ context.topic_count }}</span> 个</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">照片 <span class="text-info">{{ context.picture_count }}</span> 张</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">分类 <span class="text-info">{{ context.sort_count }}</span> 个</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">评论 <span class="text-info">{{ context.comment_count }}</span> 条</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="jumbotron">
-                <div class="container">
-                    <h3 class="display-6">上次发布 <span class="text-info">{{ context.prev_pub_date }}</span> </h3>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
+
 {% block script %}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=LEAZlMjOrm7cBfnPxX6ldwKV2hakdSZl&__ec_v__=21738218"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+
+<script type="text/javascript">
+    let dom = document.getElementById("calendarContainer");
+    let myChart = echarts.init(dom);
+    let app = {};
+    option = null;
+
+    function trans(aa) {
+        for (i in aa) {
+            console.log(i)
+        }
+    }
+
+    option = {
+        visualMap: {
+            show: false,
+            min: 0,
+            max: 10
+        },
+        tooltip: {},
+        calendar: {
+            top: 20,
+            left: 25,
+            right: 20,
+            range: ["{{ context.time_range|first }}", "{{ context.time_range|last }}"],
+            cellSize: ['auto', 20],
+            dayLabel: {
+                nameMap: 'cn'
+            },
+            monthLabel: {
+                nameMap: 'cn'
+            }
+        },
+        series: {
+            type: 'heatmap',
+            coordinateSystem: 'calendar',
+            data: {{ context.cimmit_history|safe }}
+        }
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
 
 {% endblock %}
