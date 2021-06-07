@@ -1,9 +1,6 @@
 ## 简介
 这是一个基于Django开发的博客系统，包含前端和后台管理系统，支持Markdown编辑，前端使用了Bootstrap 4，样式简洁，风格类似GitHub。
 
-## 演示地址
-[Demo](http://maguodong.com)
-
 ## 为何开发这款博客
 之前使用过WordPress、Hexo等博客框架，由于功能繁重，样式不喜欢，或Hexo访问速度太慢的原因，所以自己动手写了一款。
 
