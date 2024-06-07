@@ -26,7 +26,7 @@
 - 创建虚拟环境保证项目不被污染，并激活
 - 克隆项目：`https://github.com/Eric54920/Blog.git`
 - `pip install -r requirement.txt`安装项目所需依赖
-- 修改settings.py配置文件
+- 添加`local_settings.py`配置文件
 ```conf
 DATABASES = {
     'default': {
@@ -85,23 +85,31 @@ SITE_VERIFICATION = {
 COPY_RIGHT = "Copyright © 2017-2021 作者名 All Reversed 备案号"
 ```
 - 初始化数据库
-
-    创建迁移：`python manage.py makemigrations`
-    迁移：`python manage.py migrate`
-
-    **须知**：要想让数据库支持`emoji`表情，则需要对数据库的编码设置为utf8mb4，可参考：[https://blog.51cto.com/suifu/1853864](https://blog.51cto.com/suifu/1853864)
+    - 创建数据库：
+  
+    ```sql
+    CREATE DATABASE your_db_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    ```
+    - web目录下新建migrations包
+    - 迁移数据库：
+  
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
 
 - 向数据库添加管理员账号，这里没有做管理员注册的功能，所以要手动向数据库写入：
     ```sql
-    insert into web_user ('username', 'password', 'nic_name') values (用户名, 密码(md5值), 昵称);
+    INSERT into web_user(username, `password`, nic_name) values (用户名, 密码(sha256值), 昵称);
     ```
 - 启动项目
     
-    `python(3) manage.py runserver`
+    ```bash
+    python3 manage.py runserver`
     ```
-    首页地址：/
-    管理员登录地址：/login
-    ```
+    首页地址：`/`
+
+    管理员登录地址：`/login`
 
 ## 须知
 撰写文章时，标题要用h3，也就是`###`，以便于生成目录。
