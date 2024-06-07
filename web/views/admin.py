@@ -56,7 +56,7 @@ def dashboard(request):
         "topic_count": models.Album.objects.all().count(),
         "picture_count": models.Pictures.objects.all().count(),
         "sort_count": len(set(article.values_list('sort'))),
-        "prev_pub_date": article.order_by('create_time').last().create_time,
+        "prev_pub_date": article.order_by('create_time').last().create_time if article else "-",
         "comment_count": models.ArticleComments.objects.all().count(),
         "cimmit_history": series,
         "time_range": [start_date, end_date]
