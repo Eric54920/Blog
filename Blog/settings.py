@@ -123,13 +123,15 @@ COLOR_LIST = {'Python': '#3572A5', 'HTML': '#e34c26', 'JavaScript': '#f1e05a', '
 # 白名单
 WHITE_REGEX_URL_LIST = [
     "/$",
-    "/login/",
+    "/login",
     "/article/\d+",
-    "/archives/",
-    "/album/",
+    "/archives",
+    "/album",
     "/album/\d+",
-    "/about/"
+    "/about"
 ]
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 try:
     from .local_settings import *
