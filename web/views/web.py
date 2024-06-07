@@ -53,6 +53,10 @@ def article_detail(request, *args, **kwargs):
     """文章详情"""
     pk = kwargs.get('id')
     article = models.Article.objects.filter(pk=pk).first()
+
+    if not article:
+        return redirect("/")
+
     # 获取目录
     html = etree.HTML(article.content_html)
     h3_list = html.xpath('//h3')
@@ -60,7 +64,7 @@ def article_detail(request, *args, **kwargs):
     for h3 in h3_list:
         try:
             catelog.append({'id': h3.xpath('./@id')[0], 'title': h3.xpath('./text()')[0]})
-        except:
+        except Exception:
             catelog = []
     # 获取评论
     # {
