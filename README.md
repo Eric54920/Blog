@@ -97,7 +97,6 @@ COPY_RIGHT = "Copyright © 2024 作者名 All Reversed 备案号"
     ```sql
     CREATE DATABASE your_db_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     ```
-    - web目录下新建migrations包
     - 迁移数据库：
   
     ```bash
