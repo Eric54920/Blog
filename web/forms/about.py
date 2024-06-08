@@ -13,4 +13,4 @@ class AboutForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for _, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = '请输入%s' % (field.label,)
+            field.widget.attrs['placeholder'] = f'请输入{field.label}'

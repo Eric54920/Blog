@@ -3,6 +3,7 @@ from web import models
 
 
 class CommentForm(forms.ModelForm):
+
     class Meta:
         model = models.ArticleComments
         exclude = ['user', 'parent', 'reply', 'article', 'create_time']
@@ -17,4 +18,4 @@ class CommentForm(forms.ModelForm):
             if name == "content":
                 field.widget.attrs['rows'] = '3'
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = '%s' % (field.label,)
+            field.widget.attrs['placeholder'] = field.label

@@ -1,9 +1,9 @@
 from django import forms
-from .bootstrap import BootStrapForm
 from web import models
 
-class ArticleForm( forms.ModelForm):
-    
+
+class ArticleForm(forms.ModelForm):
+
     class Meta:
         model = models.Article
         exclude = ['author', 'is_show']
@@ -17,9 +17,8 @@ class ArticleForm( forms.ModelForm):
             if name == 'create_time':
                 field.widget.attrs['id'] = 'pub-time'
                 field.widget.attrs['class'] = 'form-control'
-                field.widget.attrs['placeholder'] = '请选择%s' % (field.label,)
+                field.widget.attrs['placeholder'] = f'请选择{field.label}'
                 continue
             old_class = field.widget.attrs.get('class', "")
-            field.widget.attrs['class'] = '{} form-control'.format(old_class)
-            field.widget.attrs['placeholder'] = '请输入%s' % (field.label,)
-    
+            field.widget.attrs['class'] = f'{old_class} form-control'
+            field.widget.attrs['placeholder'] = f'请输入{field.label}'

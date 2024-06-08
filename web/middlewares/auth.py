@@ -1,9 +1,11 @@
+import re
 from django.utils.deprecation import MiddlewareMixin
 from django.shortcuts import redirect, reverse
 from django.conf import settings
-import re
+
 
 class AuthMiddleWare(MiddlewareMixin):
+
     def process_request(self, request):
         username = request.session.get('user', '')
         path = request.path_info

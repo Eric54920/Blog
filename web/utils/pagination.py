@@ -1,34 +1,5 @@
-"""
-分页组件应用：
-1. 在视图函数中
-    queryset = models.Issues.objects.filter(project_id=project_id)
-    page_object = Pagination(
-        current_page=request.GET.get('page'),
-        all_count=queryset.count(),
-        base_url=request.path_info,
-        query_params=request.GET
-    )
-    issues_object_list = queryset[page_object.start:page_object.end]
-
-    context = {
-        'issues_object_list': issues_object_list,
-        'page_html': page_object.page_html()
-    }
-    return render(request, 'issues.html', context)
-2. 前端
-    {% for item in issues_object_list %}
-        {{item.xxx}}
-    {% endfor %}
-
-     <nav aria-label="...">
-        <ul class="pagination" style="margin-top: 0;">
-            {{ page_html|safe }}
-        </ul>
-    </nav>
-"""
-
-
 class Pagination(object):
+
     def __init__(self, current_page, all_count, base_url, query_params, per_page=10, pager_page_count=8):
         """
         分页初始化
@@ -46,6 +17,7 @@ class Pagination(object):
                 self.current_page = 1
         except Exception as e:
             self.current_page = 1
+
         query_params = query_params.copy()
         query_params._mutable = True
         self.query_params = query_params
@@ -53,6 +25,7 @@ class Pagination(object):
         self.all_count = all_count
         self.pager_page_count = pager_page_count
         pager_count, b = divmod(all_count, per_page)
+        
         if b != 0:
             pager_count += 1
         self.pager_count = pager_count
@@ -109,7 +82,8 @@ class Pagination(object):
             prev = ' <li class="page-item"><a class="page-link" href="#"><span aria-hidden="true">&laquo;</span></a></li>'
         else:
             self.query_params['page'] = self.current_page - 1
-            prev = '<li class="page-item"><a class="page-link" href="%s?%s"><span aria-hidden="true">&laquo;</span></a></li>' % (self.base_url, self.query_params.urlencode())
+            prev = '<li class="page-item"><a class="page-link" href="%s?%s"><span aria-hidden="true">&laquo;</span></a></li>' % (
+                self.base_url, self.query_params.urlencode())
         page_list.append(prev)
         for i in range(pager_start, pager_end + 1):
             self.query_params['page'] = i
@@ -117,14 +91,16 @@ class Pagination(object):
                 tpl = '<li class="page-item active"><a class="page-link" href="%s?%s">%s</a></li>' % (
                     self.base_url, self.query_params.urlencode(), i,)
             else:
-                tpl = '<li class="page-item"><a class="page-link" href="%s?%s">%s</a></li>' % (self.base_url, self.query_params.urlencode(), i,)
+                tpl = '<li class="page-item"><a class="page-link" href="%s?%s">%s</a></li>' % (
+                    self.base_url, self.query_params.urlencode(), i,)
             page_list.append(tpl)
 
         if self.current_page >= self.pager_count:
             nex = '<li class="page-item"><a class="page-link" href="#"><span aria-hidden="true">&raquo;</span></a></li>'
         else:
             self.query_params['page'] = self.current_page + 1
-            nex = '<li class="page-item"><a class="page-link" href="%s?%s"><span aria-hidden="true">&raquo;</span></a></li>' % (self.base_url, self.query_params.urlencode(),)
+            nex = '<li class="page-item"><a class="page-link" href="%s?%s"><span aria-hidden="true">&raquo;</span></a></li>' % (
+                self.base_url, self.query_params.urlencode(),)
         page_list.append(nex)
 
         # if self.all_count:

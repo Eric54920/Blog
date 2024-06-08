@@ -112,7 +112,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-COLOR_LIST = {'Python': '#3572A5', 'HTML': '#e34c26', 'JavaScript': '#f1e05a', 'CSS': '#563d7c', 'PHP':'#4F5D95',
+COLOR_LIST = {'Python': '#3572A5', 'HTML': '#e34c26', 'JavaScript': '#f1e05a', 'CSS': '#563d7c', 'PHP': '#4F5D95',
               'Vue': '#2c3e50', 'C++': '#f34b7d', 'C#': '#178600', 'Kotlin': '#F18E33', 'Java': '#b07219',
               'Go': '#00ADD8', 'Swift': '#ffac45', 'Shell': '#89e051', 'Lua': '#000080', 'C': '#555555',
               'Perl': '#0298c3', 'Scala': '#c22d40', 'Objective-C': '#438eff', 'Ruby': '#701516', 'Linux': '#f6bf03',
