@@ -32,6 +32,7 @@ class Article(models.Model):
 
 
 class ArticleComments(models.Model):
+    """文章评论表"""
     user = models.CharField(max_length=128, verbose_name="评论用户ID")
     nic_name = models.CharField(max_length=128, verbose_name="昵称")
     email = models.EmailField(verbose_name="邮箱")

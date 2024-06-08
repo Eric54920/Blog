@@ -1,27 +1,32 @@
-from django.shortcuts import render, HttpResponse, redirect, reverse
+import uuid
+from collections import Counter
+from lxml import etree
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from web import models
-from collections import Counter
 from web.utils.pagination import Pagination
-from lxml import etree
 from web.forms.comment import CommentForm
-import uuid
+
 
 # Create your views here.
+
+
 def home(request, *args, **kwargs):
     """获取所有文章和分类"""
     articles = models.Article.objects.filter(is_show=True)
     sort_by = request.GET.get('sort', '')
     query = request.GET.get('query', '').strip()
     if query:
-        article = articles.filter(Q(title__icontains=query)|Q(content_html__icontains=query)|Q(abstract__icontains=query))
+        article = articles.filter(Q(title__icontains=query) | Q(
+            content_html__icontains=query) | Q(abstract__icontains=query))
     elif sort_by:
         article = articles.filter(sort=request.GET.get('sort'))
     else:
         article = articles
-    article = article.order_by('-create_time').values('pk', 'title', 'abstract', 'sort', 'tags', 'create_time')
+    article = article.order_by(
+        '-create_time').values('pk', 'title', 'abstract', 'sort', 'tags', 'create_time')
 
     page_object = Pagination(
         current_page=request.GET.get('page'),
@@ -35,7 +40,7 @@ def home(request, *args, **kwargs):
         # 文章列表
         'article': articel_list,
         # 分类
-        'sort': sorted(Counter(articles.values_list('sort')).items(), key=lambda x:x[1], reverse=True),
+        'sort': sorted(Counter(articles.values_list('sort')).items(), key=lambda x: x[1], reverse=True),
         # 文章总数量
         'article_count': articles.count(),
         # 当前搜索或分类下的总数
@@ -48,6 +53,7 @@ def home(request, *args, **kwargs):
         'page_html': page_object.page_html()
     }
     return render(request, 'index.html', {'data': result})
+
 
 def article_detail(request, *args, **kwargs):
     """文章详情"""
@@ -63,28 +69,14 @@ def article_detail(request, *args, **kwargs):
     catelog = []
     for h3 in h3_list:
         try:
-            catelog.append({'id': h3.xpath('./@id')[0], 'title': h3.xpath('./text()')[0]})
+            catelog.append(
+                {'id': h3.xpath('./@id')[0], 'title': h3.xpath('./text()')[0]})
         except Exception:
             catelog = []
-    # 获取评论
-    # {
-    #   pk: {
-    #       user: {},
-    #       content: ....,
-    #       sub_com: [
-    #           {
-    #               user: ...,
-    #               content: ...
-    #           },
-    #           {
-    #               user: ...,
-    #               content: ....
-    #           }
-    #       ]
-    #   }
-    # }
+
     comment_dic = {}
-    comments = models.ArticleComments.objects.filter(article_id=pk).order_by('create_time')
+    comments = models.ArticleComments.objects.filter(
+        article_id=pk).order_by('create_time')
     for comment in comments:
         if comment.parent:
             comment_dic[comment.parent].setdefault('sub_comments', [])
@@ -118,6 +110,7 @@ def article_detail(request, *args, **kwargs):
     }
     return render(request, 'article.html', {'data': context})
 
+
 @csrf_exempt
 def article_comment(request, *args, **kwargs):
     """创建评论"""
@@ -141,8 +134,9 @@ def article_comment(request, *args, **kwargs):
             "reply_user": models.ArticleComments.objects.filter(reply=comment.reply).first().user,
         }
         # 如果是回复子评论的
-        if not int(comment.reply) == 0:
-            reply_to = models.ArticleComments.objects.filter(pk=comment.reply).first()
+        if int(comment.reply) != 0:
+            reply_to = models.ArticleComments.objects.filter(
+                pk=comment.reply).first()
             context['reply_to'] = {
                 "nic_name": reply_to.nic_name,
                 "web_site": reply_to.web_site,
@@ -151,9 +145,11 @@ def article_comment(request, *args, **kwargs):
         return JsonResponse({'status': 200, 'comment': context})
     return JsonResponse({'status': 400})
 
+
 def archives(request):
     """归档"""
-    article = models.Article.objects.filter(is_show=True).order_by('-create_time').values('pk', 'title', 'sort', 'create_time')
+    article = models.Article.objects.filter(is_show=True).order_by(
+        '-create_time').values('pk', 'title', 'sort', 'create_time')
     # {
     #     '2020': [article, ...],
     #     '2021': [article, ...]
@@ -164,18 +160,23 @@ def archives(request):
         archives[str(article['create_time'])[:4]].append(article)
     return render(request, 'archives.html', {'archives': archives.items()})
 
+
 def album(request):
     """相册"""
     topic = models.Album.objects.filter(is_show=True).values('pk', 'title')
     for tpc in list(topic):
         try:
-            tpc['url'] = models.Pictures.objects.filter(album_id=tpc['pk']).first().url
-        except:
+            tpc['url'] = models.Pictures.objects.filter(
+                album_id=tpc['pk']).first().url
+        except Exception:
             continue
     return render(request, 'album/album.html', {'data': topic})
 
+
 def album_detail(request, *args, **kwargs):
-    pictures = models.Pictures.objects.filter(album_id=kwargs.get('id'), is_show=True).values('pk', 'intro', 'url')
+    """相册详情"""
+    pictures = models.Pictures.objects.filter(album_id=kwargs.get(
+        'id'), is_show=True).values('pk', 'intro', 'url')
     topic = models.Album.objects.filter(pk=kwargs.get('id')).first()
     context = {
         "pictures": pictures,
@@ -187,7 +188,9 @@ def album_detail(request, *args, **kwargs):
     }
     return render(request, 'album/picture.html', {'data': context})
 
+
 def about(request):
+    """关于"""
     obj = models.User.objects.all().first()
     user = {
         'intro': obj.intro,

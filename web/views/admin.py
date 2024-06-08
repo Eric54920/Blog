@@ -1,18 +1,15 @@
-from django.shortcuts import render, HttpResponse, redirect, reverse
+import datetime
+from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
-import uuid
+from web import models
 from web.forms.login import LoginForm
 from web.forms.article import ArticleForm
 from web.forms.album import AlbumForm
 from web.forms.about import AboutForm
-from web import models
 from web.utils.pagination import Pagination
 from web.utils.encrypt import sha256
-import datetime
-import json
-
 
 
 def login(request):
@@ -25,7 +22,8 @@ def login(request):
     if form.is_valid():
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
-        curr_user = models.User.objects.filter(username=username, password=password).first()
+        curr_user = models.User.objects.filter(
+            username=username, password=password).first()
         if not curr_user:
             form.add_error('username', '用户不存在')
             return render(request, 'admin/login.html', {'form': form})
@@ -50,7 +48,8 @@ def change_password(request):
         return JsonResponse({"status": 400, "msg": "新密码两次不一致"})
 
     old_hash_password = sha256(old_password)
-    curr_user = models.User.objects.filter(username=username, password=old_hash_password).first()
+    curr_user = models.User.objects.filter(
+        username=username, password=old_hash_password).first()
 
     if not curr_user:
         return JsonResponse({"status": 401, "msg": "该用户不存在"})
@@ -66,14 +65,18 @@ def logout(request):
     request.session.set_expiry(0)
     return redirect(reverse('login'))
 
+
 def dashboard(request):
     article = models.Article.objects.all()
 
     # 当前时期
     year, month, day = datetime.datetime.now().strftime("%Y-%m-%d").split('-')
-    start_date = datetime.date(int(year)-1, int(month), int(day)).strftime("%Y-%m-%d")
-    end_date = datetime.date(int(year), int(month), int(day)).strftime("%Y-%m-%d")
-    data = models.Article.objects.filter(create_time__range=(start_date, end_date)).values('create_time').annotate(count=Count('sort')).order_by('create_time').values_list('create_time', 'count')
+    start_date = datetime.date(
+        int(year)-1, int(month), int(day)).strftime("%Y-%m-%d")
+    end_date = datetime.date(int(year), int(
+        month), int(day)).strftime("%Y-%m-%d")
+    data = models.Article.objects.filter(create_time__range=(start_date, end_date)).values(
+        'create_time').annotate(count=Count('sort')).order_by('create_time').values_list('create_time', 'count')
     series = []
     for i in data:
         date = i[0].strftime("%Y-%m-%d")
@@ -92,9 +95,11 @@ def dashboard(request):
 
     return render(request, 'admin/dashboard.html', {'context': context})
 
+
 def article(request):
     """文章"""
-    article = models.Article.objects.all().order_by('-create_time').values('pk', 'title', 'sort', 'create_time', 'is_show')
+    article = models.Article.objects.all().order_by('-create_time').values('pk',
+                                                                           'title', 'sort', 'create_time', 'is_show')
     page_object = Pagination(
         current_page=request.GET.get('page'),
         all_count=article.count(),
@@ -108,6 +113,7 @@ def article(request):
         'page_html': page_object.page_html()
     }
     return render(request, 'admin/article.html', {'data': result})
+
 
 def article_edit(request, *args, **kwargs):
     """文章创建 & 编辑"""
@@ -128,11 +134,13 @@ def article_edit(request, *args, **kwargs):
     else:
         form = ArticleForm(data=request.POST)
     if form.is_valid():
-        user = models.User.objects.filter(username=request.session.get('user')).first()
+        user = models.User.objects.filter(
+            username=request.session.get('user')).first()
         form.instance.author = user
         form.save()
         return redirect('article')
     return render(request, 'admin/article_edit.html', {'status': False, 'form': form})
+
 
 @csrf_exempt
 def article_hide(request, *args, **kwargs):
@@ -147,6 +155,7 @@ def article_hide(request, *args, **kwargs):
         msg = "show"
     article.save()
     return JsonResponse({'status': 200, 'msg': msg})
+
 
 @csrf_exempt
 def article_delete(request, *args, **kwargs):
@@ -171,12 +180,14 @@ def comment(request):
     }
     return render(request, 'admin/comments.html', {'data': result})
 
+
 @csrf_exempt
 def comment_delete(request):
     """删除评论"""
     id = request.POST.get('id')
     models.ArticleComments.objects.filter(pk=id).first().delete()
     return JsonResponse({'status': 200})
+
 
 def comment_reply(request):
     """回复评论"""
@@ -188,14 +199,17 @@ def comment_reply(request):
         reply = 0
     content = request.POST.get('content')
     article = request.POST.get('article')
-    user = models.User.objects.filter(username=request.session.get('user')).first()
-    models.ArticleComments.objects.create(parent=parent, reply=reply, content=content, 
-    article_id=article, user=user.pk, nic_name=user.nic_name, web_site=user.web_site, email=user.email)
+    user = models.User.objects.filter(
+        username=request.session.get('user')).first()
+    models.ArticleComments.objects.create(parent=parent, reply=reply, content=content,
+                                          article_id=article, user=user.pk, nic_name=user.nic_name, web_site=user.web_site, email=user.email)
     return JsonResponse({'status': 200})
+
 
 def album(request):
     """相册"""
-    topic = models.Album.objects.all().values('pk', 'title', 'create_time', 'is_show')
+    topic = models.Album.objects.all().values(
+        'pk', 'title', 'create_time', 'is_show')
     page_object = Pagination(
         current_page=request.GET.get('page'),
         all_count=topic.count(),
@@ -210,6 +224,7 @@ def album(request):
     }
     return render(request, 'admin/album.html', {'data': context})
 
+
 def album_edit(request):
     """专题创建 & 修改"""
     if request.method == 'GET':
@@ -222,25 +237,28 @@ def album_edit(request):
         return render(request, 'admin/album_edit.html', {'form': form})
 
     # POST 请求不带id为创建，带为更新
-    pk = request.GET.get('id', '') # 从路径中获取id
+    pk = request.GET.get('id', '')  # 从路径中获取id
     if pk:
         album = models.Album.objects.filter(pk=pk).first()
         form = AlbumForm(data=request.POST, instance=album)
     else:
         form = AlbumForm(data=request.POST)
     if form.is_valid():
-        user = models.User.objects.filter(username=request.session.get('user')).first()
+        user = models.User.objects.filter(
+            username=request.session.get('user')).first()
         form.instance.poster = user
         topic = form.save()
         return redirect(reverse('album_upload', args=(topic.pk,)))
     return render(request, 'admin/album_edit.html', {'form': form})
+
 
 @csrf_exempt
 def album_upload(request, *args, **kwargs):
     """专题中照片的操作"""
     album_id = kwargs.get('id')
     if request.method == "GET":
-        pictures = models.Pictures.objects.filter(album=album_id).values('pk', 'url', 'intro', 'is_show')
+        pictures = models.Pictures.objects.filter(
+            album=album_id).values('pk', 'url', 'intro', 'is_show')
         return render(request, 'admin/upload.html', {'data': pictures, 'album': album_id})
 
     data = []
@@ -248,15 +266,20 @@ def album_upload(request, *args, **kwargs):
         data.append(i)
     for i in range(len(data[0][1])):
         # 判断是否已经存在此照片
-        pic = models.Pictures.objects.filter(album_id=album_id, url=data[0][1][i])
+        pic = models.Pictures.objects.filter(
+            album_id=album_id, url=data[0][1][i])
         # 不存在则创建
         if not pic:
-            models.Pictures.objects.create(album_id=album_id, url=data[0][1][i], intro=data[1][1][i])
+            models.Pictures.objects.create(
+                album_id=album_id, url=data[0][1][i], intro=data[1][1][i])
         # 存在则更新
         else:
-            models.Pictures.objects.filter(album_id=album_id, url=data[0][1][i]).update(intro=data[1][1][i])
-    pictures = models.Pictures.objects.filter(album=album_id).values('pk', 'url', 'intro', 'is_show')
+            models.Pictures.objects.filter(
+                album_id=album_id, url=data[0][1][i]).update(intro=data[1][1][i])
+    pictures = models.Pictures.objects.filter(
+        album=album_id).values('pk', 'url', 'intro', 'is_show')
     return render(request, 'admin/upload.html', {'data': pictures})
+
 
 @csrf_exempt
 def picture_upload(request):
@@ -284,6 +307,7 @@ def picture_upload(request):
     result['url'] = images
     return JsonResponse(result)
 
+
 @csrf_exempt
 def album_hide(request, *args, **kwargs):
     """隐藏专题"""
@@ -298,6 +322,7 @@ def album_hide(request, *args, **kwargs):
     album.save()
     return JsonResponse({'status': 200, 'msg': msg})
 
+
 @csrf_exempt
 def album_delete(request, *args, **kwargs):
     """删除专题"""
@@ -308,6 +333,7 @@ def album_delete(request, *args, **kwargs):
         picture.delete()
     album.delete()
     return JsonResponse({'status': 200})
+
 
 @csrf_exempt
 def picture_hide(request, *args, **kwargs):
@@ -323,6 +349,7 @@ def picture_hide(request, *args, **kwargs):
     picture.save()
     return JsonResponse({'status': 200, 'msg': msg})
 
+
 @csrf_exempt
 def picture_delete(request, *args, **kwargs):
     """删除照片"""
@@ -330,9 +357,11 @@ def picture_delete(request, *args, **kwargs):
     picture.delete()
     return JsonResponse({'status': 200})
 
+
 def settings(request):
     """关于"""
-    user = models.User.objects.filter(username=request.session.get('user')).first()
+    user = models.User.objects.filter(
+        username=request.session.get('user')).first()
     if request.method == "GET":
         form = AboutForm(instance=user)
         return render(request, 'admin/about.html', {'form': form})
@@ -340,5 +369,5 @@ def settings(request):
     if form.is_valid():
         form.save()
         return render(request, 'admin/about.html', {'form': form})
-    
+
     return render(request, 'admin/about.html', {'form': form})
