@@ -17,6 +17,7 @@
                 <div class="border rounded p-3 mb-3">
                     <h6 class="font-weight-normal mb-2 text-dark">年份</h6>
                     <ul class="m-0 p-0" style="list-style: none;">
+                        {% if archives %}
                         {% for item in archives %}
                         <li class="py-1 font-weight-normal">
                             <a class="align-items-center text-primary d-flex justify-content-between list-group-item list-group-item-action px-2 py-1 rounded" href="#{{ item.0 }}">{{ item.0 }}
@@ -24,11 +25,15 @@
                             </a>
                         </li>
                         {% endfor %}
+                        {% else %}
+                        <li class="text-center">暂无</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
             <div class="col-md-9 my-4">
                 <h2 class="font-weight-normal">归档</h2>
+                {% if archives %}
                 {% for list in archives %}
                 <h4 class="my-3" id="{{ list.0 }}">{{ list.0 }}年</h4>
                 <ul class="list-group list-group-flush">
@@ -41,6 +46,12 @@
                     {% endfor %}
                 </ul>
                 {% endfor %}
+                {% else %}
+                <div class="py-5 text-center">
+                    <img class="mb-5" style="width:50%" src="{% static 'images/no_data.svg' %}">
+                    <h1 class="pt-3 text-dark">还没写过文章呢~</h1>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

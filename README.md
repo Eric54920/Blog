@@ -27,7 +27,10 @@
 - 克隆项目：`https://github.com/Eric54920/Blog.git`
 - `pip install -r requirement.txt`安装项目所需依赖
 - 添加`local_settings.py`配置文件
+
 ```conf
+DEBUG = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -40,19 +43,19 @@ DATABASES = {
 }
 
 # 部署时的静态资源存储位置
-STATIC_ROOT= 'xxx'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # 基本配置
 # 站点LOGO、标签icon
-LOGO = "logo cdn地址"
+LOGO = "https://s21.ax1x.com/2024/06/07/pktJ4Tx.png"
 # 头像
-AVATAR = "头像 cdn地址"
+AVATAR = "https://s21.ax1x.com/2024/06/07/pktJ4Tx.png"
 # 站点名称
-SITE_NAME = "博客名称"
+SITE_NAME = "我的小站"
 # 作者
-AUTHOR = "作者名称"
+AUTHOR = "Eric"
 # 签名
-SIGNATURE = "签名"
+SIGNATURE = "千里之行，始于足下"
 # 站点关键字
 KEYWORDS = ""
 # 站点描述
@@ -60,13 +63,13 @@ DESC = ""
 # 相册描述
 ALBUM_DESC = ""
 # 相册头图
-ALBUM_HEADIMG = "cdn地址"
+ALBUM_HEADIMG = "https://s21.ax1x.com/2024/06/07/pktYEBn.jpg"
 
 # 社交信息
 SOCIAL = {
     "GITHUB": {
-        "icon": "fa xxx", # 示例：fa-github
-        "url": "xxx" # 示例：https://github.com/用户名
+        "icon": "fa", # 示例：fa-github
+        "url": "" # 示例：https://github.com/用户名
     }
     ...
 }

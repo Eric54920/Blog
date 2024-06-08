@@ -48,7 +48,11 @@
                         </div>
                     </div>
                 </div>
+                {% if user.intro %}
                 {{  user.intro|safe }}
+                {% else %}
+                暂无信息
+                {% endif %}
                 <div class="jumbotron jumbotron-fluid py-5">
                     <div class="row">
                         <div class="col-12 col-md-12">
@@ -56,7 +60,11 @@
                         </div>
                     </div>
                 </div>
+                {% if user.skill %}
                 {{ user.skill|safe }}
+                {% else %}
+                暂无技术栈信息
+                {% endif %}
             </div>
         </div>
     </div>

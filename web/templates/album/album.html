@@ -52,6 +52,7 @@ bg-img {
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row mb-1">
+            {% if data %}
             {% for item in data %}
             <div class="col-md-4 mb-3">
                 <div class="card mb-1 shadow-sm height-215 border-0">
@@ -62,6 +63,9 @@ bg-img {
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            <h2 class="text-center">还没有分享过照片</h2>
+            {% endif %}
         </div>
     </div>
 </div>

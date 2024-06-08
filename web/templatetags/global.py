@@ -46,6 +46,5 @@ def social():
 def site_verification():
     meta_tag = ""
     for name, id in settings.SITE_VERIFICATION.items():
-        print(name, id)
         meta_tag += f"<meta name = '{ name }-site-verification' content='{ id }'/>"
     return mark_safe(meta_tag)

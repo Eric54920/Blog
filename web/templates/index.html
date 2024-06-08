@@ -31,11 +31,15 @@
                 <div class="border rounded p-3 mb-3">
                     <h6 class="font-weight-normal mb-2 text-dark">分类</h6>
                     <ul class="m-0 p-0" style="list-style: none;">
+                        {% if data.sort %}
                         {% for item in data.sort %}
                         <li>
                             <a class="align-items-center d-flex font-weight-normal justify-content-between list-group-item list-group-item-action px-2 py-1 rounded" href="/?sort={{ item.0.0 }}">{{ item.0.0 }}<span class="badge badge-secondary badge-pill">{{ item.1 }}</span></a>
                         </li>
                         {% endfor %}
+                        {% else %}
+                        <li class="text-center">暂无分类</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -51,6 +55,7 @@
                     <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                 </form>
                 <ul class="list-group list-group-flush">
+                    {% if data.article %}
                     {% for article in data.article %}
                     
                     <li class="list-group-item px-lg-0 border-top">
@@ -68,6 +73,12 @@
                     </li>
                     
                     {% endfor %}
+                    {% else %}
+                    <div class="py-5 text-center">
+                        <img class="mb-5" style="width:50%" src="{% static 'images/no_data.svg' %}">
+                        <h1 class="pt-3 text-dark">还没写过文章呢~</h1>
+                    </div>
+                    {% endif %}
                 </ul>
                 <!--分页-->
                 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
