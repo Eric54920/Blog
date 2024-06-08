@@ -12,4 +12,5 @@ uwsgi.ini
 *.sqlite3
 
 # database migrations
-migrations
+web/migrations/*
+!web/migrations/__init__.py
