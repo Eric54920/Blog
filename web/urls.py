@@ -36,5 +36,6 @@ urlpatterns = [
         path('picture_delete/<int:id>', admin.picture_delete, name="picture_delete"),
 
         path('about/', admin.settings),
+        path('change_password/', admin.change_password, name="change_password")
     ])),
 ]

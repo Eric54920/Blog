@@ -8,6 +8,7 @@
     {% site_verification %}
     <link rel="icon" href="{{ 'icon'|logo }}">
     <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'plugin/font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
@@ -58,7 +59,18 @@
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
     <script src="{% static 'js/feather.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+    <script>
+      function alert_msg(type, msg) {
+        Swal.fire({
+          position: "top",
+          icon: type,
+          title: msg,
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+    </script>
     {% block script %}{% endblock %}
 </body>
 </html>

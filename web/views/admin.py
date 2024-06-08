@@ -9,6 +9,7 @@ from web.forms.album import AlbumForm
 from web.forms.about import AboutForm
 from web import models
 from web.utils.pagination import Pagination
+from web.utils.encrypt import sha256
 import datetime
 import json
 
@@ -32,6 +33,33 @@ def login(request):
         request.session.set_expiry(60 * 60 * 24 * 14)
         return redirect('dashboard')
     return render(request, 'admin/login.html', {'status': False, 'form': form})
+
+
+@csrf_exempt
+def change_password(request):
+    """更新密码"""
+    old_password = request.POST.get("old_password")
+    new_password = request.POST.get("new_password")
+    re_password = request.POST.get("re_password")
+
+    if not all([old_password, new_password, re_password]):
+        return JsonResponse({"status": 200, "msg": "请将表单填写完整！"})
+    username = request.session['user']
+
+    if new_password != re_password:
+        return JsonResponse({"status": 400, "msg": "新密码两次不一致"})
+
+    old_hash_password = sha256(old_password)
+    curr_user = models.User.objects.filter(username=username, password=old_hash_password).first()
+
+    if not curr_user:
+        return JsonResponse({"status": 401, "msg": "该用户不存在"})
+
+    new_hash_password = sha256(new_password)
+    curr_user.password = new_hash_password
+    curr_user.save()
+    return JsonResponse({"status": 200, "msg": "密码更新成功"})
+
 
 def logout(request):
     request.session['user'] = ""
@@ -335,3 +363,6 @@ def settings(request):
     if form.is_valid():
         form.save()
         return render(request, 'admin/about.html', {'form': form})
+    
+    print(form.errors)
+    return render(request, 'admin/about.html', {'form': form})

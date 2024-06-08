@@ -9,7 +9,8 @@
 
 {% block content %}
 <div class="dashboard">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">关于</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="javascript:document.form.submit();" type="button" class="btn btn-sm btn-outline-secondary">
@@ -20,17 +21,132 @@
     </div>
     <form name="form" action="" method="post">
         {% csrf_token %}
-        {% for field in form %}
-        <div class="mb-3">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            <span class="text-danger">{{ field.errors.0 }}</span>
+
+        <div class="form-row">
+            <div class="col col-12 col-md-3 mb-3">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {{ form.username }}
+                <span class="text-danger">{{ form.username.errors.0 }}</span>
+            </div>
+            <div class="col col-12 col-md-3 mb-3">
+                <label for="{{ form.nic_name.id_for_label }}">{{ form.nic_name.label }}</label>
+                {{ form.nic_name }}
+                <span class="text-danger">{{ form.nic_name.errors.0 }}</span>
+            </div>
+            <div class="col col-12 col-md-6 mb-3">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+                <span class="text-danger">{{ form.email.errors.0 }}</span>
+            </div>
         </div>
-        {% endfor %}
+
+        <div class="form-row">
+            <div class="col col-12 col-md-6 mb-3">
+                <label for="{{ form.web_site.id_for_label }}">{{ form.web_site.label }}</label>
+                {{ form.web_site }}
+                <span class="text-danger">{{ form.web_site.errors.0 }}</span>
+            </div>
+            <div class="col col-12 col-md-6 mb-3">
+                <label for="{{ form.avatar.id_for_label }}">{{ form.avatar.label }}</label>
+                {{ form.avatar }}
+                <span class="text-danger">{{ form.avatar.errors.0 }}</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.intro.id_for_label }}">{{ form.intro.label }}</label>
+            {{ form.intro }}
+            <span class="text-danger">{{ form.intro.errors.0 }}</span>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.skill.id_for_label }}">{{ form.skill.label }}</label>
+            {{ form.skill }}
+            <span class="text-danger">{{ form.skill.errors.0 }}</span>
+        </div>
     </form>
+    <div class="mb-3">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#changepwd">更新密码</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="changepwd" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="changepwdLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">修改密码</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="old_password">旧密码</label>
+                        <input type="password" class="form-control" id="old_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">新密码</label>
+                        <input type="password" class="form-control" id="new_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="re_password">重复新密码</label>
+                        <input type="password" class="form-control" id="re_password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="change-pwd btn btn-primary">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block script %}
+<script>
+    (function () {
+        changePwd();
+    })();
 
+    function changePwd() {
+            $('.change-pwd').on('click', function () {
+                old_password = $("#old_password").val();
+                new_password = $("#new_password").val();
+                re_password = $("#re_password").val();
+                
+                if (old_password == "" || new_password == "" || re_password == "") {
+                    alert_msg("error", "请将表单填写完整！");
+                    return
+                }
+
+                if (new_password != re_password) {
+                    alert_msg("error", "两次新密码不一致！")
+                    return
+                }
+
+                var data = {
+                    "old_password": old_password,
+                    "new_password": new_password,
+                    "re_password": re_password
+                }
+                
+                $.ajax({
+                    url: "{% url 'change_password' %}",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: (res) => {
+                        if (res.status == 200) {
+                            alert_msg("success", res.msg)
+                            $("#changepwd").modal('hide');
+                        }
+                    }
+                })
+
+            })
+        }
+
+</script>
 {% endblock %}

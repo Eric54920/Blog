@@ -14,6 +14,7 @@
 - 相册
     - 相册详细
 - 关于
+
 ### 后台管理
 - 概览
 - 文章增删改、隐藏、批量删除
@@ -28,17 +29,17 @@
 - `pip install -r requirement.txt`安装项目所需依赖
 - 添加`local_settings.py`配置文件
 
-```conf
+```python
 DEBUG = True
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'HOST': '',
-        'PORT': ,
-        'USER': '',
-        'PASSWORD': ''
+        'NAME': os.environ.get("DB_NAME", "xxx"),
+        'HOST': os.environ.get("DB_HOST", "xxx"),
+        'PORT': os.environ.get("DB_PORT", 3306),
+        'USER': os.environ.get("DB_USER", "xxx"),
+        'PASSWORD': os.environ.get("DB_PASSWORD", "xxx")
     }
 }
 
@@ -57,36 +58,36 @@ AUTHOR = "Eric"
 # 签名
 SIGNATURE = "千里之行，始于足下"
 # 站点关键字
-KEYWORDS = ""
+KEYWORDS = "关键字1,关键字2..."
 # 站点描述
-DESC = ""
+DESC = "这是一个blog网站"
 # 相册描述
-ALBUM_DESC = ""
+ALBUM_DESC = "分享点滴，记录美好"
 # 相册头图
 ALBUM_HEADIMG = "https://s21.ax1x.com/2024/06/07/pktYEBn.jpg"
 
 # 社交信息
 SOCIAL = {
     "GITHUB": {
-        "icon": "fa", # 示例：fa-github
+        "icon": "fa", # 示例：fa-github，所有icon：https://www.runoob.com/font-awesome/fontawesome-reference.html
         "url": "" # 示例：https://github.com/用户名
     }
     ...
 }
 
-# 提交链接
+# 网站验证
 # meta标签中的值，例："pDDOXfDq08OO3V-4AKWqEJw6S04QHJORgY6sDXKLjiQ"
 SITE_VERIFICATION = {
-    # Google
+    # Google，https://search.google.com/search-console/welcome?hl=zh-cn
     "google": "",
-    # 百度
+    # 百度，https://ziyuan.baidu.com/site/index#/
     "baidu": ""
 }
 
-
 # 版权信息 以下为示例
-COPY_RIGHT = "Copyright © 2017-2021 作者名 All Reversed 备案号"
+COPY_RIGHT = "Copyright © 2024 作者名 All Reversed 备案号"
 ```
+
 - 初始化数据库
     - 创建数据库：
   
@@ -101,14 +102,15 @@ COPY_RIGHT = "Copyright © 2017-2021 作者名 All Reversed 备案号"
     python manage.py migrate
     ```
 
-- 向数据库添加管理员账号，这里没有做管理员注册的功能，所以要手动向数据库写入：
+- 向数据库添加管理员账号，这里没有做管理员注册的功能，所以要手动向数据库写入，默认密码：admin12345，请在后台及时修改：
     ```sql
-    INSERT into web_user(username, `password`, nic_name) values (用户名, 密码(sha256值), 昵称);
+    INSERT into web_user(username, `password`, nic_name) values (账号, "166e668071a25539bf48c3ae50dbd8922f9981d25b5a5fc83a33f822c1c34dfe", 昵称);
     ```
+
 - 启动项目
     
     ```bash
-    python3 manage.py runserver`
+    python3 manage.py runserver
     ```
     首页地址：`/`
 

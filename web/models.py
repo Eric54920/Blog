@@ -9,9 +9,9 @@ class User(models.Model):
     nic_name = models.CharField(max_length=128, verbose_name="昵称")
     email = models.EmailField(null=True, blank=True, verbose_name="邮箱")
     web_site = models.URLField(null=True, blank=True, verbose_name="网址")
-    avatar = models.URLField(null=True, blank=True, verbose_name="头像")
-    intro = models.TextField(null=True, blank=True, verbose_name="简介")
-    skill = models.TextField(null=True, blank=True, verbose_name="技能")
+    avatar = models.URLField(null=True, blank=True, verbose_name="头像URL")
+    intro = models.TextField(null=True, blank=True, verbose_name="简介（支持html标签）")
+    skill = models.TextField(null=True, blank=True, verbose_name="技能（支持html标签）")
     
 class Article(models.Model):
     """文章表"""
