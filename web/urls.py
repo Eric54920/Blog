@@ -20,7 +20,6 @@ urlpatterns = [
         path('article_edit/', admin.article_edit),
         path('article_hide/<int:id>', admin.article_hide, name="article_hide"),
         path('article_delete/<int:id>', admin.article_delete, name="article_delete"),
-        path('file_upload/', admin.file_upload, name="file_upload"),
 
         path('comment/', admin.comment, name="comment"),
         path('comment/delete/', admin.comment_delete, name="comment_delete"),

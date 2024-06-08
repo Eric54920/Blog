@@ -154,25 +154,6 @@ def article_delete(request, *args, **kwargs):
     models.Article.objects.filter(pk=kwargs.get('id')).first().delete()
     return JsonResponse({'status': 200})
 
-@csrf_exempt
-def file_upload(request):
-    """文件上传"""
-    result = {
-        'success': 0,
-        'massage': None,
-        'url': None
-    }
-    image_object = request.FILES.get('editormd-image-file')
-    if not image_object:
-        result['message'] = '文件不存在'
-        return JsonResponse(result)
-    ext = image_object.name.split('.')[-1]
-    key = "{}.{}".format(uuid.uuid4(), ext)
-    # qiniu upload method
-    ret, info = upload(key, image_object, image_object.name, image_object.size)
-    result['success'] = 1
-    result['url'] = "http://q90vhkwl9.bkt.clouddn.com/" + key
-    return JsonResponse(result)
 
 def comment(request):
     """评论"""
@@ -324,8 +305,6 @@ def album_delete(request, *args, **kwargs):
     # 删除专题下所有文件
     pictures = models.Pictures.objects.filter(album_id=album.pk)
     for picture in pictures:
-        key = picture.url.split('com/')[-1]
-        ret, info = delete_file(key)
         picture.delete()
     album.delete()
     return JsonResponse({'status': 200})
@@ -348,8 +327,6 @@ def picture_hide(request, *args, **kwargs):
 def picture_delete(request, *args, **kwargs):
     """删除照片"""
     picture = models.Pictures.objects.filter(pk=kwargs.get('id')).first()
-    key = picture.url.split('com/')[-1]
-    ret, info = delete_file(key)
     picture.delete()
     return JsonResponse({'status': 200})
 
@@ -364,5 +341,4 @@ def settings(request):
         form.save()
         return render(request, 'admin/about.html', {'form': form})
     
-    print(form.errors)
     return render(request, 'admin/about.html', {'form': form})

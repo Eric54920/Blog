@@ -111,7 +111,6 @@
 <script src="{% static 'plugin/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'plugin/bootstrap-select/js/i18n/defaults-zh_CN.min.js' %}"></script>
 <script>
-    const UPLOAD_URL = "{% url 'file_upload' %}";
     $(function () {
         initDatePicker();
         initEditor();
@@ -128,9 +127,7 @@
             emoji: true,
             saveHTMLToTextarea : true,
             path: "{% static 'plugin/editor-md/lib/' %}",
-            imageUpload:true,
-            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-            imageUploadURL: UPLOAD_URL
+            imageUpload: false
         });
     }
     // 添加对话框：初始化时间选择
