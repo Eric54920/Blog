@@ -30,6 +30,9 @@
 - 添加`local_settings.py`配置文件
 
 ```python
+import os
+
+
 DEBUG = True
 
 DATABASES = {
