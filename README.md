@@ -4,6 +4,8 @@
 
 项目前身已经过依赖升级与初始化流程整理，当前使用 Django 6.1、Python 3.12+，并已提供 Docker Compose 部署方式。
 
+![example](./web/static/images/example.jpg)
+
 ## 功能
 
 前台：
