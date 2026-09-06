@@ -1,6 +1,7 @@
 from django.utils.safestring import mark_safe
 from django.template import Library
 from django.conf import settings
+from django.templatetags.static import static
 
 register = Library()
 
@@ -8,10 +9,18 @@ register = Library()
 @register.filter
 def logo(string):
     """logo"""
-    if string in ['icon', 'logo']:
-        return settings.LOGO
+    if string in ["icon", "logo"]:
+        url = settings.LOGO
     elif string == 'avatar':
-        return settings.AVATAR
+        url = settings.AVATAR
+    else:
+        return ""
+
+    if url.startswith(("http://", "https://", "//", "/")):
+        return url
+    if url.startswith("static/"):
+        url = url[len("static/"):]
+    return static(url)
 
 
 @register.simple_tag
