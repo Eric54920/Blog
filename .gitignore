@@ -1,16 +1,20 @@
-#pycharm 
-.idea
+# OS / editor
 .DS_Store
-__pycache__
-*.py[cod] 
-*$py.class
+.idea
+.vscode/
 
-# Django stuff: 
-local_settings.py
-.qiniu_pythonsdk_hostscache.json
-uwsgi.ini
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
 *.sqlite3
 
-# database migrations
-web/migrations/*
-!web/migrations/__init__.py
+# Local configuration
+.env
+.qiniu_pythonsdk_hostscache.json
+
+# Deployment / generated files
+staticfiles/
+uwsgi.ini
