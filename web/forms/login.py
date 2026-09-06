@@ -29,3 +29,8 @@ class LoginForm(forms.ModelForm):
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = f'请输入{field.label}'
+            if name == 'username':
+                field.widget.attrs['autocomplete'] = 'username'
+                field.widget.attrs['autofocus'] = 'autofocus'
+            elif name == 'password':
+                field.widget.attrs['autocomplete'] = 'current-password'
